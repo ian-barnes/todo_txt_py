@@ -26,7 +26,7 @@ def run():
     if cmd == "list":
         pass
     elif cmd == "complete":
-        tasknum = int(sys.argv[2])
+        tasknum = int(args[0])
         tasks[tasknum].complete()
     elif cmd == "add":
         task = Task(" ".join(args))

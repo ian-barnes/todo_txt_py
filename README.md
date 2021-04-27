@@ -4,31 +4,10 @@ Minimal toy [todo.txt](https://github.com/todotxt) implementation in Python.
 
 ## Install
 
-The project uses [direnv](https://direnv.net/). You'll need to add the following
-snippet to your global `.direnvrc`:
+Set up a virtual environment if you want, however you usually do it. (One
+possible way described below.)
 
-```bash
-layout_poetry() {
-  if [[ ! -f pyproject.toml ]]; then
-    log_error 'No pyproject.toml found.  Use `poetry new` or `poetry init` to create one first.'
-    exit 2
-  fi
-
-  local VENV=$(dirname $(poetry run which python))
-  export VIRTUAL_ENV=$(echo "$VENV" | rev | cut -d'/' -f2- | rev)
-  export POETRY_ACTIVE=1
-  PATH_add "$VENV"
-}
-```
-
-and put this in the local `.envrc`:
-
-```bash
-layout poetry
-```
-
-That done, and the direnv activated, run `poetry install` to get all
-dependencies.
+Run `poetry install`.
 
 ## Usage
 
@@ -63,8 +42,8 @@ correct at all. It should not be used other than to play with.
 - Implement the following commands:
   - `delete`
   - `update` (called `replace` in the standard `todo.txt` CLI)
-  - `priority`
-  - `depri`
+  - `prioritise`
+  - `deprioritise`
   - `report`
   - `help` / `shorthelp`
 - Everything relating to contexts and projects
@@ -75,6 +54,10 @@ correct at all. It should not be used other than to play with.
   the file
 - Syncing with Google Drive and/or Dropbox?
 - An interactive mode with prompt and main loop
+- Setting things up a bit more like a "normal" Python project, so that this is
+  not dependent on being inside a virtual environment and so that it's also a
+  re-usable package
+- Allow unambiguous abbreviations of commands
 
 ## Notes
 
@@ -92,3 +75,36 @@ correct at all. It should not be used other than to play with.
   Docs](https://www.dropbox.com/developers/documentation/python)
 - [Google Drive Python API
   Quickstart](https://developers.google.com/drive/api/v3/quickstart/python)
+
+## Example virtual environment setup
+
+Just one possible example of how to set things up for development, not
+necessarily optimal:
+
+Poetry sets up a virtual environment and [direnv](https://direnv.net/) automates
+activating it whenever I go into the project directory.
+
+I added the following snippet to my `.direnvrc`:
+
+```bash
+layout_poetry() {
+  if [[ ! -f pyproject.toml ]]; then
+    log_error 'No pyproject.toml found.  Use `poetry new` or `poetry init` to create one first.'
+    exit 2
+  fi
+
+  local VENV=$(dirname $(poetry run which python))
+  export VIRTUAL_ENV=$(echo "$VENV" | rev | cut -d'/' -f2- | rev)
+  export POETRY_ACTIVE=1
+  PATH_add "$VENV"
+}
+```
+
+and then put this in the local `.envrc`:
+
+```bash
+layout poetry
+```
+
+Without doing the `direnv`, you can activate the virtual environment with
+`poetry shell`.
