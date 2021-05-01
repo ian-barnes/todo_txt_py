@@ -1,3 +1,4 @@
+import shutil
 import sys
 from typing import List
 
@@ -23,17 +24,31 @@ def run():
         lines = file.readlines()
     tasks = [Task(line) for line in lines]
 
+    changed = False
+
     if cmd == "list":
         pass
     elif cmd == "complete":
         tasknum = int(args[0])
         tasks[tasknum].complete()
+        changed = True
     elif cmd == "add":
         task = Task(" ".join(args))
         tasks.append(task)
+        changed = True
     else:
         print(f"Unknown command {cmd}")
 
     list_tasks(tasks)
 
     # Now write the (possibly updated) list back to file
+    if changed:
+        shutil.copyfile("todo.txt", "archive.txt")
+        lines = [str(task) for task in tasks]
+        try:
+            with open("todo.txt", "w") as file:
+                file.writelines(lines)
+        except Exception:
+            print("An error happened in file writing")
+            shutil.copyfile("todo.txt", "error.txt")
+            shutil.copyfile("archive.txt", "todo.txt")

@@ -32,3 +32,18 @@ class Task:
         if not self.completed:
             self.completed = date.today()
             self.priority = None
+
+    def __str__(self):
+        words = []
+        if self.completed:
+            words.append("x")
+            words.append(self.completed.isoformat())
+
+        if self.priority is not None:
+            words.append("(" + self.priority + ")")
+
+        if self.due is not None:
+            words.append("due:" + self.due.isoformat())
+
+        words.append(self.description)
+        return " ".join(words) + "\n"
