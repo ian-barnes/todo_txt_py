@@ -1,6 +1,6 @@
 # todo_txt_py
 
-Minimal toy [todo.txt](https://github.com/todotxt) implementation in Python.
+Minimal toy [todo.txt][todo-txt-github] implementation in Python.
 
 ## Install
 
@@ -14,74 +14,49 @@ Run `poetry install`.
 To run:
 
 ```bash
-python -m todo_txt <cmd> <args>
+todo <cmd> <args>
 ```
 
-or just
-
-```bash
-todo.sh <cmd> <args>
-```
+## Development
 
 To format code, check linting, run tests etc., use the `Makefile`. Just running
 `make` will list the targets.
 
 ## Purpose
 
-This is not intended as a production project, but as a source of easy
-exercises for pair programming interviews.
+This is not intended as a production project, but mostly as a source of easy
+exercises for pair programming interviews and as a sandbox for learning more
+about project setup, structure, packaging, CI and so on.
 
 As such, it comes with absolutely no guarantee that it does anything useful or
 correct at all. It should not be used other than to play with.
 
-## Still to do
+## To do
 
-- Modularisation
-- Meaningful unit tests
-- Save modified todo list back to file
-- Implement the following commands:
-  - `delete`
-  - `update` (called `replace` in the standard `todo.txt` CLI)
-  - `prioritise`
-  - `deprioritise`
-  - `report`
-  - `help` / `shorthelp`
-- Everything relating to contexts and projects
-- Sorting and filtering of the task list
-- Multiple files? (not really necessary, apart from `done.txt` because it's in
-  the standard)
-- Some sort of config file and/or environment variable telling it where to find
-  the file
-- Syncing with Google Drive and/or Dropbox?
-- An interactive mode with prompt and main loop
-- Setting things up a bit more like a "normal" Python project, so that this is
-  not dependent on being inside a virtual environment and so that it's also a
-  re-usable package
-- Allow unambiguous abbreviations of commands
+In the spirit of [eating your own dog food][dog-food], the project to do list is
+stored in the top-level `todo.txt`. To view it, run `todo list`.
 
 ## Notes
 
 - I'm aware that class `Task` and its constructor could be simplified using
   `attrs`, but I didn't want to require too much Python knowledge to be able to
   work on this.
-- In some ways this is all deliberately sloppy so as to generate opportunities
+- In some ways this is deliberately a bit sloppy so as to generate opportunities
   for discussion and criticism.
 
 ## Useful links
 
-- [todo.txt format](https://github.com/todotxt/todo.txt)
-- [Reference CLI usage/spec](https://github.com/todotxt/todo.txt)
-- [Dropbox Python API
-  Docs](https://www.dropbox.com/developers/documentation/python)
-- [Google Drive Python API
-  Quickstart](https://developers.google.com/drive/api/v3/quickstart/python)
+- [todo.txt format][todo-txt-format]
+- [Reference CLI usage/spec][todo-txt-cli]
+- [Dropbox Python API  Docs][dropbox-api]
+- [Google Drive Python API Quickstart][google-drive-api]
 
 ## Example virtual environment setup
 
 Just one possible example of how to set things up for development, not
 necessarily optimal:
 
-Poetry sets up a virtual environment and [direnv](https://direnv.net/) automates
+Poetry sets up a virtual environment and [direnv][direnv] automates
 activating it whenever I go into the project directory.
 
 I added the following snippet to my `.direnvrc`:
@@ -108,3 +83,11 @@ layout poetry
 
 Without doing the `direnv`, you can activate the virtual environment with
 `poetry shell`.
+
+[direnv]: https://direnv.net/
+[dog-food]: https://en.wikipedia.org/wiki/Eating_your_own_dog_food
+[todo-txt-github]: https://github.com/todotxt
+[todo-txt-format]: https://github.com/todotxt/todo.txt
+[todo-txt-cli]: https://github.com/todotxt/todo.txt-cli
+[dropbox-api]: https://www.dropbox.com/developers/documentation/python
+[google-drive-api]: https://developers.google.com/drive/api/v3/quickstart/python

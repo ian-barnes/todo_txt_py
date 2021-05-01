@@ -1,5 +1,18 @@
-(A) Thank Mom for the meatballs @phone
-(B) Schedule Goodwill pickup +GarageSale @phone
-Post signs around the neighborhood +GarageSale
-@GroceryStore Eskimo pies
-x 2011-03-03 Call Mom
+Modularisation
+Meaningful unit tests
+x 2021-05-01 Save modified todo list back to file
+(B) delete +commands
+(C) update (called replace in the standard `todo.txt` CLI) +commands
+x 2021-05-02 prioritise +commands
+x 2021-05-02 deprioritise +commands
+(B) report +commands
+(C) help / shorthelp +commands
+(C) Everything relating to contexts and projects
+(A) Sorting and filtering of the task list
+(B) Multiple files? (not really necessary, apart from done.txt because it's in the standard)
+(A) Some sort of config file and/or environment variable telling it where to find the file
+(D) Syncing with Google Drive and/or Dropbox?
+(D) An interactive mode with prompt and main loop
+(A) Setting things up a bit more like a normal Python project, so that this is not dependent on being inside a virtual environment and so that it's also a re-usable package
+(B) Allow unambiguous abbreviations of commands
+(B) Add an option to allow setting completion date

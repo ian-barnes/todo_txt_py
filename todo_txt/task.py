@@ -1,5 +1,5 @@
 from datetime import date
-from typing import Optional
+from typing import List, Optional
 
 
 class Task:
@@ -19,7 +19,7 @@ class Task:
             # Should require priority to be a single upper-case letter
             self.priority = words[0].removeprefix("(").removesuffix(")")
             words = words[1:]
-        description_words = []
+        description_words: List[str] = []
         self.due = None
         for word in words:
             if word.startswith("due:"):
@@ -31,10 +31,16 @@ class Task:
     def complete(self):
         if not self.completed:
             self.completed = date.today()
-            self.priority = None
+            self.unset_priority()
+
+    def set_priority(self, priority: str):
+        self.priority = priority
+
+    def unset_priority(self):
+        self.priority = None
 
     def __str__(self):
-        words = []
+        words: List[str] = []
         if self.completed:
             words.append("x")
             words.append(self.completed.isoformat())
@@ -46,4 +52,4 @@ class Task:
             words.append("due:" + self.due.isoformat())
 
         words.append(self.description)
-        return " ".join(words) + "\n"
+        return " ".join(words)
