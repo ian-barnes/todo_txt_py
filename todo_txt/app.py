@@ -11,6 +11,7 @@ backup_file = "backup.txt"
 error_file = "error.txt"
 done_file = "done.txt"
 
+alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 def list_tasks(tasks: List[Task]):
     for i, item in enumerate(tasks):
@@ -81,7 +82,7 @@ def prioritise(tasknum: int, priority: str):
     """Set the priority for task TASKNUM to PRIORITY ('A'...'Z')"""
     tasks = read_tasks_from_file()
     priority = uppercase_first_char(priority)
-    assert len(priority) == 1 and priority[0] in "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    assert len(priority) == 1 and priority[0] in alphabet
     tasks[tasknum].set_priority(priority)
     write_tasks_to_file(tasks)
 
@@ -93,3 +94,33 @@ def deprioritise(tasknum: int):
     tasks = read_tasks_from_file()
     tasks[tasknum].unset_priority()
     write_tasks_to_file(tasks)
+
+
+@cli.command()
+@click.argument("tasknum", type=click.INT, required=True)
+def delete(tasknum: int):
+    """Remove task TASKNUM from the list"""
+    tasks = read_tasks_from_file()
+    del tasks[tasknum]
+    write_tasks_to_file(tasks)
+
+
+@cli.command()
+def report():
+    """Summarise the task list"""
+    tasks = read_tasks_from_file()
+    total = len(tasks)
+    done = len([task for task in tasks if task.completed is not None])
+    print(f"{total} tasks, {done} completed ({done * 100.0 / total:.1f}%)")
+    priorities = {}
+    for task in tasks:
+        p = task.priority
+        if p is not None:
+            if p in priorities:
+                priorities[p] += 1
+            else:
+                priorities[p] = 1
+    if priorities != {}:
+        print("Task counts by priority:")
+        for (priority, count) in sorted(priorities.items()):
+            print(f"({priority}) -> {count}")
