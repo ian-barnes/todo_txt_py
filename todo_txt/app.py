@@ -13,6 +13,7 @@ done_file = "done.txt"
 
 alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
+
 def list_tasks(tasks: List[Task]):
     for i, item in enumerate(tasks):
         print(f"[{i}]: {str(item)}")
