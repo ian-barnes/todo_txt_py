@@ -1,8 +1,7 @@
+import sys
 from os import remove
 from shutil import copyfile
 from typing import List
-
-import click
 
 from .task import Task
 
@@ -39,76 +38,45 @@ def write_tasks_to_file(tasks: List[Task]):
         remove(backup_file)
 
 
-@click.group()
-def cli():
-    """todo.txt in Python"""
-
-
-@cli.command()
 def list():
-    """List all tasks"""
     tasks = read_tasks_from_file()
-    for i, item in enumerate(tasks):
-        print(f"[{i}]: {str(item)}")
+    list_tasks(tasks)
 
 
-@cli.command()
-@click.argument("tasknum", type=click.INT, required=True)
-# @click.option("--when", click.DATE, default=now())  # DATE type doesn't exist
 def complete(tasknum: int):
-    """Mark task TASKNUM as completed"""
     tasks = read_tasks_from_file()
     tasks[tasknum].complete()
     write_tasks_to_file(tasks)
 
 
-@cli.command()
-@click.argument("words", type=click.STRING, nargs=-1, required=True)
 def add(words: List[str]):
-    """Add a new task to the list"""
     tasks = read_tasks_from_file()
     task = Task(" ".join(words))
     tasks.append(task)
     write_tasks_to_file(tasks)
 
 
-def uppercase_first_char(s: str) -> str:
-    return s.upper()[0]
-
-
-@cli.command()
-@click.argument("tasknum", type=click.INT, required=True)
-@click.argument("priority", type=click.STRING, required=True)
 def prioritise(tasknum: int, priority: str):
-    """Set the priority for task TASKNUM to PRIORITY ('A'...'Z')"""
     tasks = read_tasks_from_file()
-    priority = uppercase_first_char(priority)
+    priority = priority[0].upper()
     assert len(priority) == 1 and priority[0] in alphabet
     tasks[tasknum].set_priority(priority)
     write_tasks_to_file(tasks)
 
 
-@cli.command()
-@click.argument("tasknum", type=click.INT, required=True)
 def deprioritise(tasknum: int):
-    """Remove any priority from task TASKNUM"""
     tasks = read_tasks_from_file()
     tasks[tasknum].unset_priority()
     write_tasks_to_file(tasks)
 
 
-@cli.command()
-@click.argument("tasknum", type=click.INT, required=True)
 def delete(tasknum: int):
-    """Remove task TASKNUM from the list"""
     tasks = read_tasks_from_file()
     del tasks[tasknum]
     write_tasks_to_file(tasks)
 
 
-@cli.command()
 def report():
-    """Summarise the task list"""
     tasks = read_tasks_from_file()
     total = len(tasks)
     done = len([task for task in tasks if task.completed is not None])
@@ -125,3 +93,30 @@ def report():
         print("Task counts by priority:")
         for (priority, count) in sorted(priorities.items()):
             print(f"({priority}) -> {count}")
+
+
+def run():
+    cmd = sys.argv[1]
+    args = sys.argv[2:]
+
+    if cmd == "list":
+        list()
+    elif cmd == "complete":
+        tasknum = int(args[0])
+        complete(tasknum)
+    elif cmd == "add":
+        add(args)
+    elif cmd == "prioritise":
+        tasknum = int(args[0])
+        priority = args[1]
+        prioritise(tasknum, priority)
+    elif cmd == "deprioritise":
+        tasknum = int(args[0])
+        deprioritise(tasknum)
+    elif cmd == "delete":
+        tasknum = int(args[0])
+        delete(tasknum)
+    elif cmd == "report":
+        report()
+    else:
+        print(f"Unknown command {cmd}")
