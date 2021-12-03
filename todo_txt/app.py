@@ -94,29 +94,39 @@ def report():
         for (priority, count) in sorted(priorities.items()):
             print(f"({priority}) -> {count}")
 
+AVAILABLE_CMDS = ["list", "complete", "add", "prioritise", "deprioritise", "delete", "report"]
+def does_pattern_matching(pattern: str, name: str) -> bool:
+    return bool(pattern) and name.startswith(pattern)
+
+def is_unique(pattern: str) -> bool:
+    return [cmd.startswith(pattern) for cmd in AVAILABLE_CMDS].count(True) <= 1
 
 def run():
     cmd = sys.argv[1]
     args = sys.argv[2:]
 
-    if cmd == "list":
+    if not is_unique(cmd):
+        print("More than one cmd available")
+        return
+
+    if does_pattern_matching(cmd,"list"):
         list()
-    elif cmd == "complete":
+    elif does_pattern_matching(cmd,"complete"):
         tasknum = int(args[0])
         complete(tasknum)
-    elif cmd == "add":
+    elif does_pattern_matching(cmd,"add"):
         add(args)
-    elif cmd == "prioritise":
+    elif does_pattern_matching(cmd,"prioritise"):
         tasknum = int(args[0])
         priority = args[1]
         prioritise(tasknum, priority)
-    elif cmd == "deprioritise":
+    elif does_pattern_matching(cmd,"deprioritise"):
         tasknum = int(args[0])
         deprioritise(tasknum)
-    elif cmd == "delete":
+    elif does_pattern_matching(cmd,"delete"):
         tasknum = int(args[0])
         delete(tasknum)
-    elif cmd == "report":
+    elif does_pattern_matching(cmd,"report"):
         report()
     else:
         print(f"Unknown command {cmd}")
