@@ -1,7 +1,7 @@
 import sys
 from os import remove
 from shutil import copyfile
-from typing import List
+from typing import Dict, List
 
 from .task import Task
 
@@ -10,10 +10,8 @@ backup_file = "backup.txt"
 error_file = "error.txt"
 done_file = "done.txt"
 
-alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
-
-def list_tasks(tasks: List[Task]):
+def print_task_list(tasks: List[Task]):
     for i, item in enumerate(tasks):
         print(f"[{i}]: {str(item)}")
 
@@ -38,50 +36,54 @@ def write_tasks_to_file(tasks: List[Task]):
         remove(backup_file)
 
 
-def list():
-    tasks = read_tasks_from_file()
-    list_tasks(tasks)
+def list_tasks(tasks: List[Task], args: List[str]):
+    print_task_list(tasks)
 
 
-def complete(tasknum: int):
-    tasks = read_tasks_from_file()
+def complete(tasks: List[Task], args: List[str]):
+    tasknum = int(args[0])
     tasks[tasknum].complete()
     write_tasks_to_file(tasks)
 
 
-def add(words: List[str]):
-    tasks = read_tasks_from_file()
+def add(tasks: List[Task], words: List[str]):
     task = Task(" ".join(words))
     tasks.append(task)
     write_tasks_to_file(tasks)
 
 
-def prioritise(tasknum: int, priority: str):
-    tasks = read_tasks_from_file()
-    priority = priority[0].upper()
-    assert len(priority) == 1 and priority[0] in alphabet
-    tasks[tasknum].set_priority(priority)
-    write_tasks_to_file(tasks)
+def prioritise(tasks: List[Task], args: List[str]):
+    tasknum = int(args[0])
+    priority = args[1]
+    if len(priority) == 1 and priority[0].isalpha():
+        priority = priority[0].upper()
+        try:
+            tasks[tasknum].set_priority(priority)
+            write_tasks_to_file(tasks)
+        except Exception:
+            print(f"Couldn't set priority on task {tasknum}")
+    else:
+        print("Priority must be a single letter")
 
 
-def deprioritise(tasknum: int):
-    tasks = read_tasks_from_file()
+def deprioritise(tasks: List[Task], args: List[str]):
+    tasknum = int(args[0])
     tasks[tasknum].unset_priority()
     write_tasks_to_file(tasks)
 
 
-def delete(tasknum: int):
-    tasks = read_tasks_from_file()
+def delete(tasks: List[Task], args: List[str]):
+    tasknum = int(args[0])
     del tasks[tasknum]
     write_tasks_to_file(tasks)
 
 
-def report():
-    tasks = read_tasks_from_file()
+def report(tasks: List[Task], args: List[str]):
     total = len(tasks)
     done = len([task for task in tasks if task.completed is not None])
     print(f"{total} tasks, {done} completed ({done * 100.0 / total:.1f}%)")
-    priorities = {}
+    priorities: Dict[str, int] = {}
+
     for task in tasks:
         p = task.priority
         if p is not None:
@@ -99,24 +101,29 @@ def run():
     cmd = sys.argv[1]
     args = sys.argv[2:]
 
-    if cmd == "list":
-        list()
-    elif cmd == "complete":
-        tasknum = int(args[0])
-        complete(tasknum)
-    elif cmd == "add":
-        add(args)
-    elif cmd == "prioritise":
-        tasknum = int(args[0])
-        priority = args[1]
-        prioritise(tasknum, priority)
-    elif cmd == "deprioritise":
-        tasknum = int(args[0])
-        deprioritise(tasknum)
-    elif cmd == "delete":
-        tasknum = int(args[0])
-        delete(tasknum)
-    elif cmd == "report":
-        report()
+    cmd_actions = {
+        "list": list_tasks,
+        "complete": complete,
+        "prioritise": prioritise,
+        "deprioritise": deprioritise,
+        "delete": delete,
+        "report": report,
+    }
+    tasks = read_tasks_from_file()
+
+    if cmd in cmd_actions:
+        cmd_actions[cmd](tasks, args)
     else:
-        print(f"Unknown command {cmd}")
+        # see how to handle autocomplete
+        matched_cmd = []
+        for k in cmd_actions.keys():
+            if k.startswith(cmd):
+                matched_cmd.append(k)
+        if len(matched_cmd) == 0:
+            print(f"Unknown command {cmd}")
+        elif len(matched_cmd) == 1:
+            allow_completion = input(f"Completing to command {matched_cmd[0]} [Y/N] ")
+            if allow_completion.lower() == "y":
+                cmd_actions[matched_cmd[0]](tasks, args)
+        else:
+            print("Possible matched: " + (", ".join(matched_cmd)))

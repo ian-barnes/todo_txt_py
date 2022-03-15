@@ -1,11 +1,6 @@
 Modularisation
 Meaningful unit tests
-x 2021-05-01 Save modified todo list back to file
-x 2021-05-03 delete +commands
 (C) update (called replace in the standard `todo.txt` CLI) +commands
-x 2021-05-02 prioritise +commands
-x 2021-05-02 deprioritise +commands
-x 2021-05-04 report +commands
 x 2021-05-03 help / shorthelp +commands
 (C) Everything relating to contexts and projects
 (A) Sorting and filtering of the task list
@@ -16,4 +11,4 @@ x 2021-05-03 help / shorthelp +commands
 (A) Setting things up a bit more like a normal Python project, so that this is not dependent on being inside a virtual environment and so that it's also a re-usable package
 (B) Allow unambiguous abbreviations of commands
 (B) Add an option to allow setting completion date
-Prepare a branch for Clément to work on
+x 2022-03-15 Interview Patrick

@@ -34,6 +34,8 @@ class Task:
             self.unset_priority()
 
     def set_priority(self, priority: str):
+        if self.completed:
+            raise Exception("task already completed")
         self.priority = priority
 
     def unset_priority(self):
