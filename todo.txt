@@ -14,6 +14,5 @@ x 2021-05-03 help / shorthelp +commands
 (D) Syncing with Google Drive and/or Dropbox?
 (D) An interactive mode with prompt and main loop
 (A) Setting things up a bit more like a normal Python project, so that this is not dependent on being inside a virtual environment and so that it's also a re-usable package
-(B) Allow unambiguous abbreviations of commands
+x 2022-04-06 Allow unambiguous abbreviations of commands
 (B) Add an option to allow setting completion date
-Prepare a branch for Clément to work on

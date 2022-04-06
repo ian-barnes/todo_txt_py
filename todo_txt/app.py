@@ -2,6 +2,7 @@ import sys
 from os import remove
 from shutil import copyfile
 from typing import List
+from re import match, search
 
 from .task import Task
 
@@ -38,25 +39,40 @@ def write_tasks_to_file(tasks: List[Task]):
         remove(backup_file)
 
 
-def list():
+def list(**kwargs):
     tasks = read_tasks_from_file()
     list_tasks(tasks)
 
-
-def complete(tasknum: int):
+def complete(**kwargs):
+    try:
+        tasknum = kwargs["tasknum"]
+    except KeyError:
+        print("Usage: todo complete <tasknum>")
+    tasknum = int(tasknum)
     tasks = read_tasks_from_file()
     tasks[tasknum].complete()
     write_tasks_to_file(tasks)
 
 
-def add(words: List[str]):
+def add(**kwargs):
+    try:
+        words = kwargs["words"]
+    except KeyError:
+        print("Usage: todo add <words>")
+
     tasks = read_tasks_from_file()
     task = Task(" ".join(words))
     tasks.append(task)
     write_tasks_to_file(tasks)
 
 
-def prioritise(tasknum: int, priority: str):
+def prioritise(**kwargs):
+    try:
+        tasknum = kwargs["tasknum"]
+        priority = kwargs["priority"]
+    except KeyError:
+        print("Usage: todo prioritise <tasknum> <priority>")
+    tasknum = int(tasknum)
     tasks = read_tasks_from_file()
     priority = priority[0].upper()
     assert len(priority) == 1 and priority[0] in alphabet
@@ -64,19 +80,29 @@ def prioritise(tasknum: int, priority: str):
     write_tasks_to_file(tasks)
 
 
-def deprioritise(tasknum: int):
+def deprioritise(**kwargs):
+    try:
+        tasknum = kwargs["tasknum"]
+    except KeyError:
+        print("Usage: todo deprioritise <tasknum>")
+    tasknum = int(tasknum)
     tasks = read_tasks_from_file()
     tasks[tasknum].unset_priority()
     write_tasks_to_file(tasks)
 
 
-def delete(tasknum: int):
+def delete(**kwargs):
+    try:
+        tasknum = kwargs["tasknum"]
+    except KeyError:
+        print("Usage: todo delete <tasknum>")
+    tasknum = int(tasknum)
     tasks = read_tasks_from_file()
     del tasks[tasknum]
     write_tasks_to_file(tasks)
 
 
-def report():
+def report(**kwargs):
     tasks = read_tasks_from_file()
     total = len(tasks)
     done = len([task for task in tasks if task.completed is not None])
@@ -99,24 +125,51 @@ def run():
     cmd = sys.argv[1]
     args = sys.argv[2:]
 
-    if cmd == "list":
-        list()
-    elif cmd == "complete":
-        tasknum = int(args[0])
-        complete(tasknum)
-    elif cmd == "add":
-        add(args)
-    elif cmd == "prioritise":
-        tasknum = int(args[0])
-        priority = args[1]
-        prioritise(tasknum, priority)
-    elif cmd == "deprioritise":
-        tasknum = int(args[0])
-        deprioritise(tasknum)
-    elif cmd == "delete":
-        tasknum = int(args[0])
-        delete(tasknum)
-    elif cmd == "report":
-        report()
+    kwargs = {
+      "tasknum": args[0] if len(args) > 0 else None,
+      "priority": args[1] if len(args) > 1 else None,
+      "words": args
+    }
+
+    cmds = {
+        "list": list,
+        "complete": complete,
+        "add": add,
+        "prioritise": prioritise,
+        "deprioritise": deprioritise,
+        "delete": delete,
+        "report": report
+    }
+
+    matches = [iter_cmd for iter_cmd in cmds.keys() if iter_cmd.startswith(cmd)]
+
+    if len(matches) > 1:
+        print(f"Found matches {', '.join(matches)}: be more specific")
+    elif len(matches) == 0:
+        print("No matching command")
     else:
-        print(f"Unknown command {cmd}")
+        # perform command
+        cmds[matches[0]](**kwargs)
+
+
+    # if cmd == "list":
+    #     list()
+    # elif cmd == "complete":
+    #     tasknum = int(args[0])
+    #     complete(tasknum)
+    # elif cmd == "add":
+    #     add(args)
+    # elif cmd == "prioritise":
+    #     tasknum = int(args[0])
+    #     priority = args[1]
+    #     prioritise(tasknum, priority)
+    # elif cmd == "deprioritise":
+    #     tasknum = int(args[0])
+    #     deprioritise(tasknum)
+    # elif cmd == "delete":
+    #     tasknum = int(args[0])
+    #     delete(tasknum)
+    # elif cmd == "report":
+    #     report()
+    # else:
+    #     print(f"Unknown command {cmd}")
