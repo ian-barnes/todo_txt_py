@@ -13,7 +13,6 @@ done_file = "done.txt"
 
 alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
-
 def list_tasks(tasks: List[Task]):
     for i, item in enumerate(tasks):
         print(f"[{i}]: {str(item)}")
@@ -121,36 +120,45 @@ def report(**kwargs):
             print(f"({priority}) -> {count}")
 
 
-def run():
-    cmd = sys.argv[1]
-    args = sys.argv[2:]
+CMDS = {
+    "list": list,
+    "complete": complete,
+    "add": add,
+    "prioritise": prioritise,
+    "deprioritise": deprioritise,
+    "delete": delete,
+    "report": report
+}
 
-    kwargs = {
-      "tasknum": args[0] if len(args) > 0 else None,
-      "priority": args[1] if len(args) > 1 else None,
-      "words": args
-    }
 
-    cmds = {
-        "list": list,
-        "complete": complete,
-        "add": add,
-        "prioritise": prioritise,
-        "deprioritise": deprioritise,
-        "delete": delete,
-        "report": report
-    }
+def check_cmd(cmd: str) -> tuple[bool, List[str]]:
 
-    matches = [iter_cmd for iter_cmd in cmds.keys() if iter_cmd.startswith(cmd)]
+    args_ok = False
 
-    if len(matches) > 1:
-        print(f"Found matches {', '.join(matches)}: be more specific")
-    elif len(matches) == 0:
-        print("No matching command")
-    else:
+    matches = [CMDS[iter_cmd] for iter_cmd in CMDS.keys() if iter_cmd.startswith(cmd)]
+
+    return args_ok, matches
+
+
+def run_with_args(argv) -> List[str]:
+    
+    args_ok, matches = check_cmd(argv[1])
+
+    if args_ok:
+        cmd = argv[1]
+        args = argv[2:]
+
+        kwargs = {
+            "tasknum": args[0] if len(args) > 0 else None,
+            "priority": args[1] if len(args) > 1 else None,
+            "words": args
+        }
+
         # perform command
-        cmds[matches[0]](**kwargs)
+        matches[0](**kwargs)
 
+
+    return matches
 
     # if cmd == "list":
     #     list()
@@ -173,3 +181,6 @@ def run():
     #     report()
     # else:
     #     print(f"Unknown command {cmd}")
+
+def run():
+    run_with_args(sys.argv)
