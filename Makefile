@@ -1,3 +1,5 @@
+python_src=todo_txt tests
+
 .PHONY: help
 help:  # from https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
@@ -5,13 +7,13 @@ help:  # from https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 
 .PHONY: check-lint
 check-lint:  ## Lint the code
-	mypy todo_txt
-	flake8 todo_txt
+	mypy ${python_src}
+	flake8 ${python_src}
 
 .PHONY: check-format
 check-format:  ## Check formatting
-	isort --check --diff todo_txt
-	black --check --diff todo_txt
+	isort --check --diff ${python_src}
+	black --check --diff ${python_src}
 
 .PHONY: check-test
 check-test:  ## Run unit tests
@@ -22,5 +24,5 @@ check: check-format check-lint check-test  ## Run all checks
 
 .PHONY: format
 format:  ## Format all files
-	isort todo_txt
-	black todo_txt
+	isort ${python_src}
+	black ${python_src}
