@@ -1,6 +1,8 @@
+from email.policy import default
 from os import remove
 from shutil import copyfile
 from typing import List
+from .Commands.ListCommand import ListCommand
 
 import click
 
@@ -45,11 +47,11 @@ def cli():
 
 
 @cli.command()
-def list():
+@click.argument("filter", type=click.STRING, required=False, default = "")
+def list(filter : str):
     """List all tasks"""
-    tasks = read_tasks_from_file()
-    for i, item in enumerate(tasks):
-        print(f"[{i}]: {str(item)}")
+    cmd = ListCommand(filter)
+    print(cmd.Execute(read_tasks_from_file()))
 
 
 @cli.command()

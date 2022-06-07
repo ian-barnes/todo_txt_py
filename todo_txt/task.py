@@ -8,6 +8,12 @@ class Task:
     completed: Optional[date]
     due: Optional[date]
 
+    def __iter__(self):
+        words = self.description.split()
+        for w in words:
+            yield w
+            
+
     def __init__(self, line: str):
         words = line.split()
         self.completed = None
