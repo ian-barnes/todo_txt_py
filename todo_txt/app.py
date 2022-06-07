@@ -2,10 +2,10 @@ from email.policy import default
 from os import remove
 from shutil import copyfile
 from typing import List
-from .Commands.ListCommand import ListCommand
 
 import click
 
+from .Commands.ListCommand import ListCommand
 from .task import Task
 
 todo_file = "todo.txt"
@@ -47,11 +47,12 @@ def cli():
 
 
 @cli.command()
-@click.argument("filter", type=click.STRING, required=False, default = "")
-def list(filter : str):
+@click.argument("filter", type=click.STRING, required=False, default="")
+def list(filter: str):
     """List all tasks"""
     cmd = ListCommand(filter)
-    print(cmd.Execute(read_tasks_from_file()))
+    # print(cmd.Execute(read_tasks_from_file()))
+    print("\n".join(cmd.Execute(read_tasks_from_file())))
 
 
 @cli.command()

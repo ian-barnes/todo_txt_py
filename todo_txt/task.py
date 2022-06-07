@@ -12,7 +12,6 @@ class Task:
         words = self.description.split()
         for w in words:
             yield w
-            
 
     def __init__(self, line: str):
         words = line.split()
