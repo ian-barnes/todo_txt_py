@@ -2,7 +2,7 @@ Modularisation
 Meaningful unit tests
 x 2021-05-01 Save modified todo list back to file
 x 2021-05-03 delete +commands
-(C) update (called replace in the standard `todo.txt` CLI) +commands
+x 2022-06-09 (C) update (called replace in the standard `todo.txt` CLI) +commands
 x 2021-05-02 prioritise +commands
 x 2021-05-02 deprioritise +commands
 x 2021-05-04 report +commands

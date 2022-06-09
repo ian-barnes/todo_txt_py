@@ -31,7 +31,7 @@ class Task:
     def complete(self):
         if not self.completed:
             self.completed = date.today()
-            self.unset_priority()
+            #self.unset_priority()
 
     def set_priority(self, priority: str):
         self.priority = priority
