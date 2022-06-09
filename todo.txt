@@ -11,7 +11,7 @@ x 2021-05-03 help / shorthelp +commands
 (A) Sorting and filtering of the task list
 (B) Multiple files? (not really necessary, apart from done.txt because it's in the standard)
 (A) Some sort of config file and/or environment variable telling it where to find the file
-(D) Syncing with Google Drive and/or Dropbox?
+x 2022-06-09 Syncing with Google Drive and/or Dropbox?
 (D) An interactive mode with prompt and main loop
 (A) Setting things up a bit more like a normal Python project, so that this is not dependent on being inside a virtual environment and so that it's also a re-usable package
 (B) Allow unambiguous abbreviations of commands

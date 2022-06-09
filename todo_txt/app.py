@@ -1,6 +1,6 @@
 from os import remove
 from shutil import copyfile
-from typing import List
+from typing import List, Optional
 
 import click
 
@@ -14,9 +14,11 @@ done_file = "done.txt"
 alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 
-def list_tasks(tasks: List[Task]):
+def list_tasks(tasks: List[Task], filter: Optional[str]):
     for i, item in enumerate(tasks):
-        print(f"[{i}]: {str(item)}")
+        line = str(item)
+        if filter is None or filter.lower() in line.lower():
+            print(f"[{i}]: {line}")
 
 
 def read_tasks_from_file() -> List[Task]:
@@ -45,11 +47,11 @@ def cli():
 
 
 @cli.command()
-def list():
+@click.option("--filter", type=click.STRING, default=None)
+def list(filter):
     """List all tasks"""
     tasks = read_tasks_from_file()
-    for i, item in enumerate(tasks):
-        print(f"[{i}]: {str(item)}")
+    list_tasks(tasks, filter)
 
 
 @cli.command()
@@ -118,10 +120,15 @@ def report():
         p = task.priority
         if p is not None:
             if p in priorities:
-                priorities[p] += 1
+                priorities[p]['all'] += 1
             else:
-                priorities[p] = 1
+                priorities[p] = {
+                    'completed': 0,
+                    'all': 1
+                }
+            if task.completed is not None:
+                priorities[p]['completed'] += 1
     if priorities != {}:
         print("Task counts by priority:")
-        for (priority, count) in sorted(priorities.items()):
-            print(f"({priority}) -> {count}")
+        for priority, count in sorted(priorities.items()):
+            print(f"({priority}) -> {count['all']} tasks, {count['completed']} completed")
